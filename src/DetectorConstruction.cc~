@@ -1,0 +1,337 @@
+#include "DetectorConstruction.hh"
+#include "DetectorMessenger.hh"
+
+#include "ElectricFieldSetup.hh"
+
+#include "Detector.hh"
+
+#include "G4GeometryManager.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4SolidStore.hh"
+
+#include "G4NistManager.hh"
+#include "G4Material.hh"
+#include "G4Tubs.hh"
+#include "G4Box.hh"
+#include "G4Sphere.hh"
+#include "G4LogicalVolume.hh"
+#include "G4PVPlacement.hh"
+#include "G4RunManager.hh"
+#include "G4AutoDelete.hh"
+
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
+
+
+//constructor 
+DetectorConstruction::DetectorConstruction()
+ : G4VUserDetectorConstruction(),
+   fDetectorMessenger(0),
+   fSolidWorld(0), fLogicWorld(0), fPhysiWorld(0),
+   fSolidAbsorber(0),fLogicAbsorber(0), fPhysiAbsorber(0), fPhysiAbsorber2(0),
+   fSolidPMT(0),fLogicPMT(0),fPhysiPMT(0),
+   fSolidWin(0),fLogicWin(0),fPhysiWin(0),
+   fSolidSS(0),fLogicSS(0),fPhysiSS(0),
+   fSolidTumor(0),fLogicTumor(0),fPhysiTumor(0),
+   fAbsorberMaterial(0), fAbsorberThickness(0.),fAbsorberInnerRadius(0.),
+   fAbsorberRadius(0.), fWorldChanged(false), fZAbsorber(0.), fZStartAbs(0.),
+   fZEndAbs(0.),fWorldMaterial(0), fWorldSizeR(0.), fWorldSizeZ(0.),
+   fWinMaterial(0), fSSMaterial(0)
+{
+  // default parameter values of the calorimeter
+
+  //G4double multiplier = 1;
+  //G4double frx = 1;
+  
+  fWorldSizeZ = 0.100*m;
+  fWorldSizeR = 0.08*m;
+
+  fAbsorberThickness = 0.03*m;
+
+  fAbsorberInnerRadius = 0.0*m;
+  fAbsorberRadius   = 0.075/4*m;
+  fZAbsorber = (0)*mm;
+
+  // create commands for interactive definition of the calorimeter
+
+  fDetectorMessenger = new DetectorMessenger(this);
+
+  // create materials
+
+  DefineMaterials();
+
+}
+
+
+
+//deconstructor
+DetectorConstruction::~DetectorConstruction()
+{
+  delete fDetectorMessenger;
+}
+
+
+
+//Adds calorimeter construction
+G4VPhysicalVolume* DetectorConstruction::Construct()
+{
+  return ConstructCalorimeter();
+}
+
+
+
+//Defines the materials
+void DetectorConstruction::DefineMaterials()
+{
+  G4NistManager *nist = G4NistManager::Instance();
+  //Defines the material of the collimator (absorber)
+  fAbsorberMaterial = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+  G4double SST_energy[2] = {9.61*eV, 9.77*eV};
+  G4double SST_abslen[2] = {0.,0.};
+  G4MaterialPropertiesTable *SST = new G4MaterialPropertiesTable();
+  SST->AddProperty("ABSLENGTH", SST_energy, SST_abslen, 2);
+  fAbsorberMaterial->SetMaterialPropertiesTable(SST);
+  
+  //Defines the material for the Window
+  fWinMaterial = nist->FindOrBuildMaterial("G4_Ti");
+  //Defines the Material for the Sample's Space
+  fSSMaterial = nist->FindOrBuildMaterial("G4_AIR");
+  //Defines the world to be made out of liquid argon
+  fWorldMaterial = nist->FindOrBuildMaterial("G4_WATER");
+  //defines vectors to add in the refractive index of LAr property
+  G4double energy[2] = {1.239841939*eV/0.2, 1.239841939*eV/0.9};
+  G4double rindexlAr[2] = {1.2666,1.2287};
+  /*
+  //defines a material we can add properties to
+  G4MaterialPropertiesTable *mptlAr = new G4MaterialPropertiesTable();
+  //adds the refractive index 
+  mptlAr->AddProperty("RINDEX", energy, rindexlAr, 2);
+  
+  //Adds a bunch of properties that allow scintillation light to be produced
+  G4double lAr_Energy[3] = {9.61*eV, 9.68*eV, 9.77*eV};
+  G4double lAr_SCINT[3] = {0.1,1.0,0.1};
+  G4double lAr_abslen[3] = {0.2*m,0.2*m,0.2*m};
+  mptlAr->AddProperty("FASTCOMPONENT", lAr_Energy, lAr_SCINT, 3);
+  mptlAr->AddConstProperty("SCINTILLATIONYIELD", 40000. / MeV);
+  mptlAr->AddConstProperty("RESOLUTIONSCALE",1.);
+  mptlAr->AddConstProperty("FASTTIMECONSTANT", 6. * ns);
+  mptlAr->AddConstProperty("SLOWTIMECONSTANT", 1500. *ns);
+  mptlAr->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
+  mptlAr->AddProperty("ABSLENGTH", lAr_Energy, lAr_abslen, 3);
+  //changes world material to the new liquid argon with all the right properties
+  fWorldMaterial->SetMaterialPropertiesTable(mptlAr);
+  */
+}
+
+
+
+G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
+{
+  // Cleanup old geometry
+
+  if (fPhysiWorld)
+  {
+    G4GeometryManager::GetInstance()->OpenGeometry();
+    G4PhysicalVolumeStore::GetInstance()->Clean();
+    G4LogicalVolumeStore::GetInstance()->Clean();
+    G4SolidStore::GetInstance()->Clean();
+  }
+
+  // complete the Calor parameters definition and Print
+
+  ComputeCalorParameters();
+  PrintCalorParameters();
+ 
+  // World
+
+  //I will document this once because all the other objects are basically the same
+  //G4Tubs defines tube
+  fSolidWorld = new G4Tubs("World",                        // its name
+			   0.,fWorldSizeR,fWorldSizeZ/2.+0.075*m,0.,twopi);// its size
+
+  fLogicWorld = new G4LogicalVolume(fSolidWorld,           // its solid
+                                   fWorldMaterial,         // its material
+                                   "World");               // its name
+
+  fPhysiWorld = new G4PVPlacement(0,                       // no rotation
+                                  G4ThreeVector(),         // at (0,0,0)
+                                  "World",                 // its name
+                                  fLogicWorld,             // its logical volume
+                                  0,                       // its mother  volume
+                                  false,                   // no boolean op.
+                                  0);                      // copy number
+   // Sample Space
+
+  fSolidSS = new G4Tubs("SampleSpace", 0,
+			fWorldSizeR,
+			0.075/2*m,
+			0.0,twopi);
+
+  fLogicSS = new G4LogicalVolume(fSolidSS,
+				  fSSMaterial,
+				  "SampleSpace");
+
+  fPhysiSS = new G4PVPlacement(0,
+			       G4ThreeVector(0,0,-0.075/2*m-fWorldSizeZ/2),
+			       "SampleSpace",
+			       fLogicSS,
+			       fPhysiWorld,
+			       false,
+			       0);
+
+
+  fSolidTumor = new G4Tubs("Tumor", 0,
+			fAbsorberRadius,
+			fAbsorberThickness,
+			0.0,twopi);
+
+  fLogicTumor = new G4LogicalVolume(fSolidTumor,
+				  fWorldMaterial,
+				  "Tumor");
+
+  fPhysiTumor = new G4PVPlacement(0,
+			       G4ThreeVector(0,0,0.0375*m+fZAbsorber),
+			       "Tumor",
+			       fLogicTumor,
+			       fPhysiWorld,
+			       false,
+			       0);
+  
+  return fPhysiWorld;
+
+
+  
+}
+
+
+
+//prints at the beginning of each run
+void DetectorConstruction::PrintCalorParameters()
+{
+  G4cout << "\n The  WORLD   is made of "
+         << fWorldSizeZ/mm << "mm of " << fWorldMaterial->GetName();
+  G4cout << ", the transverse size (R) of the world is "
+         << fWorldSizeR/mm << " mm. " << G4endl;
+  G4cout << " The ABSORBER is made of "
+         << fAbsorberThickness/mm << "mm of " << fAbsorberMaterial->GetName();
+  G4cout << ", the PMT (R) is " << fAbsorberRadius/mm
+         << " mm. " << G4endl;
+  G4cout << " Z position of the (middle of the) absorber "
+         << fZAbsorber/mm << "  mm." << G4endl;
+  G4cout << G4endl;
+}
+
+
+
+
+void DetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
+{
+  // get the pointer to the material table
+  const G4MaterialTable* theMaterialTable = G4Material::GetMaterialTable();
+
+  // search the material by its name
+  G4Material* material;
+  for (size_t j=0 ; j<theMaterialTable->size() ; j++)
+   { material = (*theMaterialTable)[j];
+     if (material->GetName() == materialChoice)
+        {
+          fAbsorberMaterial = material;
+          fLogicAbsorber->SetMaterial(material);
+          G4RunManager::GetRunManager()->PhysicsHasBeenModified();
+        }
+   }
+}
+
+
+
+void DetectorConstruction::SetWorldMaterial(G4String materialChoice)
+{
+  // get the pointer to the material table
+  const G4MaterialTable* theMaterialTable = G4Material::GetMaterialTable();
+
+  // search the material by its name
+  G4Material* material;
+  for (size_t j=0 ; j<theMaterialTable->size() ; j++)
+   { material = (*theMaterialTable)[j];
+     if(material->GetName() == materialChoice)
+        {
+          fWorldMaterial = material;
+          fLogicWorld->SetMaterial(material);
+          G4RunManager::GetRunManager()->PhysicsHasBeenModified();
+        }
+   }
+}
+
+
+
+void DetectorConstruction::SetAbsorberThickness(G4double val)
+{
+  // change Absorber thickness and recompute the calorimeter parameters
+  fAbsorberThickness = val;
+  ComputeCalorParameters();
+  G4RunManager::GetRunManager()->ReinitializeGeometry();
+}
+
+
+
+void DetectorConstruction::SetAbsorberRadius(G4double val)
+{
+  // change the transverse size and recompute the calorimeter parameters
+  fAbsorberRadius = val;
+  ComputeCalorParameters();
+  G4RunManager::GetRunManager()->ReinitializeGeometry();
+}
+
+
+
+void DetectorConstruction::SetWorldSizeZ(G4double val)
+{
+  fWorldChanged = true;
+  fWorldSizeZ = val;
+  ComputeCalorParameters();
+  G4RunManager::GetRunManager()->ReinitializeGeometry();
+}
+
+
+
+void DetectorConstruction::SetWorldSizeR(G4double val)
+{
+  fWorldChanged = true;
+  fWorldSizeR = val;
+  ComputeCalorParameters();
+  G4RunManager::GetRunManager()->ReinitializeGeometry();
+}
+
+
+
+void DetectorConstruction::SetAbsorberZpos(G4double val)
+{
+  fZAbsorber = val;
+  ComputeCalorParameters();
+  G4RunManager::GetRunManager()->ReinitializeGeometry();
+}
+
+
+
+void DetectorConstruction::ConstructSDandField()
+{
+  // Sensitive Detectors: Absorber
+  /*
+  if (!fCalorimeterSD.Get()) {
+    CalorimeterSD* calorimeterSD = new CalorimeterSD("CalorSD",this);
+    fCalorimeterSD.Put(calorimeterSD);
+  }  
+  SetSensitiveDetector(fLogicAbsorber, fCalorimeterSD.Get());
+  */
+  // Construct the field creator - this will register the field it creates
+  
+  //G4cout<<"hit"<<G4endl;
+  
+  if (!fEmFieldSetup.Get()) { 
+    ElectricFieldSetup* fieldSetup = new ElectricFieldSetup();
+    G4AutoDelete::Register(fieldSetup); //Kernel will delete the messenger
+    fEmFieldSetup.Put(fieldSetup);
+  }  
+}

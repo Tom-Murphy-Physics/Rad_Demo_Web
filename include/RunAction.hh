@@ -1,0 +1,43 @@
+#ifndef RunAction_h
+#define RunAction_h 1
+
+#include "G4UserRunAction.hh"
+#include "G4RunManager.hh"
+#include "G4Run.hh"
+
+#include "g4root.hh"
+
+class RunMessenger;
+class G4Run;
+
+class RunAction : public G4UserRunAction
+{
+  public:
+    RunAction();
+    virtual ~RunAction();
+
+    virtual void BeginOfRunAction(const G4Run*);
+    virtual void EndOfRunAction(const G4Run*);
+    
+   
+    void  SetRndmFreq(G4int val) {fSaveRndm = val;}
+    G4int GetRndmFreq() const    {return fSaveRndm;}
+
+
+  private:
+    RunMessenger* fMessenger;
+    G4int fSaveRndm;
+  private:
+    RunAction* fRunAction;
+    G4double fx;
+    int event_id;
+    G4double delta_z;
+    int track_id;
+    G4double delta_E_good;
+    G4double delta_E_bad;
+    int type;
+    int fdetected_sp;
+
+};
+
+#endif

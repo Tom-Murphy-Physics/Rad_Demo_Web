@@ -1,0 +1,22 @@
+echo what particle would you like to use?
+read particle
+
+new="'s/particle proton/proton "$particle"/g'"
+old="'s/particle "$particle"/particle proton /g'"
+
+eval sed -i $new vis.mac
+grep particle vis.mac
+eval sed -i $old vis.mac
+
+echo What is the energy of the particle in MeV?
+read energy
+
+new="'s/energy 1234 MeV/energy "$energy" MeV/g'"
+old="'s/energy "$energy" MeV/energy 1234 MeV/g'"
+
+eval sed -i $new vis.mac
+./Rad_Demo > a.txt
+eval sed -i $old vis.mac
+
+root -l -q grade.C
+

@@ -1,0 +1,11 @@
+echo What is the energy of the photon?
+read energy
+
+new="'s/energy 1234 MeV/energy "$energy" MeV/g'"
+old="'s/energy "$energy" MeV/energy 1234 MeV/g'"
+
+grep MeV vis.mac
+eval sed -i $new vis.mac
+grep MeV vis.mac
+eval sed -i $old vis.mac
+grep MeV vis.mac
