@@ -1,3 +1,5 @@
 
 Processing grade.C...
-(float) 6.82875f
+66.7988 33.1888
+Your grade is: 33.1929
+(float) 33.1929f

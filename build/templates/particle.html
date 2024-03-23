@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block body %}
+
+<style>
+	form {
+		position : fixed;
+		top : 20px;
+		left : 20px;
+	}
+	p{
+		position : absolute;
+		height : 20px;
+		top : 200px;
+		left : 20px;
+	}
+	}
+</style>
+
+<body>
+	<form action="/" method="POST">
+		<input type="number" step="0.01" id="energy" name="energy" placeholder="Energy (MeV)">
+		<br><br> 
+		<input type="text" id="particle" name="particle" placeholder="Particle">
+		<br><br>
+		<input type="number" id="number_of_particles" name="number_of_particles" placeholder="Number of Particles">
+		<br><br>
+		<input type="number" id="beam_angle" name="beam_angle" placeholder="Beam Angle (degrees)">
+		<br><br>
+		<input type="submit" value="submit" name="action2" />
+	        <input type="submit" value="level_reset" name="action1"/>
+	</form>
+	<body>
+		<p> Level: {{level}} <br>
+		Your grade is: {{grade}} <br>
+		Particle used: {{particle}} <br>
+		Energy used: {{energy}} <br>
+		Number of particles: {{number_of_particles}}
+		</p>
+	</body>
+<body>
+
+{% endblock %}

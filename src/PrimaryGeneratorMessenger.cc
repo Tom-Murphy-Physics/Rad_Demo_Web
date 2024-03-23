@@ -14,7 +14,8 @@ PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(
    fRndmCmd(0),
    fSetXVertexCmd(0),
    fSetYVertexCmd(0),
-   fSetZVertexCmd(0)
+   fSetZVertexCmd(0),
+   fSetBeamAngleCmd(0)
 {
   fRndmCmd = new G4UIcmdWithAString("/gun/random",this);
   fRndmCmd->SetGuidance("Shoot randomly the incident particle.");
@@ -42,6 +43,11 @@ PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(
   fSetZVertexCmd->SetDefaultValue(0.0*mm);
   fSetZVertexCmd->SetDefaultUnit("mm");
 
+  fSetBeamAngleCmd = new G4UIcmdWithADoubleAndUnit("/gun/BeamAngle", this);
+  fSetBeamAngleCmd->SetGuidance(" Set the opening angle of the beam. ");
+  fSetBeamAngleCmd->SetParameterName("ba",true);
+  fSetBeamAngleCmd->SetDefaultValue(0*degree);
+  fSetBeamAngleCmd->SetDefaultUnit("degree");
 }
 
 
@@ -67,5 +73,7 @@ void PrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,
    { fAction->SetYVertex(fSetYVertexCmd->GetNewDoubleValue(newValue));}
   if( command == fSetZVertexCmd )
    { fAction->SetZVertex(fSetZVertexCmd->GetNewDoubleValue(newValue));}
+  if( command == fSetBeamAngleCmd)
+    {fAction->SetBeamAngle(fSetBeamAngleCmd->GetNewDoubleValue(newValue));}
 }
 

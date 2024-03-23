@@ -22,6 +22,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     void SetXVertex(G4double x);
     void SetYVertex(G4double y);
     void SetZVertex(G4double z);
+    void SetBeamAngle(G4double theta);
 
     static G4String GetPrimaryName();
 
@@ -33,7 +34,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4String                      fRndmFlag;     //flag for random impact point
 
     static G4ParticleDefinition* fgPrimaryParticle;
-    G4double fXVertex, fYVertex, fZVertex;
+    G4double fXVertex, fYVertex, fZVertex, fBeamAngle;
     G4bool fVertexDefined;
 
 };

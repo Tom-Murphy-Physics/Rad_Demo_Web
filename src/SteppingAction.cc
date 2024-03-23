@@ -39,7 +39,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
   //G4String geometry = step->GetTrack()->GetVolume()->GetLogicalVolume();
   G4String volume = step->GetTrack()->GetVolume()->GetLogicalVolume()->GetName();
 
-  G4double delta_E = step->GetDeltaEnergy();
+  G4double delta_E = step->GetTotalEnergyDeposit();
   if (volume == "Tumor")
     {
       man->FillNtupleDColumn(4,delta_E);

@@ -21,6 +21,7 @@ class PrimaryGeneratorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fSetXVertexCmd;
     G4UIcmdWithADoubleAndUnit* fSetYVertexCmd;
     G4UIcmdWithADoubleAndUnit* fSetZVertexCmd;
+    G4UIcmdWithADoubleAndUnit* fSetBeamAngleCmd;
 };
 
 #endif

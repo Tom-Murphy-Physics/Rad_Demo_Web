@@ -13,7 +13,7 @@
 #
 # File menu :
 /gui/addMenu file File
-#/gui/addButton file Quit exit
+/gui/addButton file Quit exit
 #
 # Run menu :
 /gui/addMenu run Run

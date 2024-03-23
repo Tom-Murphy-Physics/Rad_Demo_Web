@@ -1,4 +1,4 @@
-# Install script for directory: /home/tom/software/geant4/geant4.10.02.p03/Rad_Demo
+# Install script for directory: /home/tom/software/geant4/geant4-v10.2.3/Rad_Demo
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,12 +44,12 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/Rad_Demo"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/tom/software/geant4/geant4.10.02.p03/Rad_Demo/build/Rad_Demo")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/tom/software/geant4/geant4-v10.2.3/Rad_Demo/build/Rad_Demo")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/Rad_Demo" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/Rad_Demo")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/Rad_Demo"
-         OLD_RPATH "/home/tom/software/geant4/geant4.10.02.p03-install/lib:"
+         OLD_RPATH "/home/tom/software/geant4/geant4-v10.2.3-install/lib:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/Rad_Demo")
@@ -65,5 +65,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/tom/software/geant4/geant4.10.02.p03/Rad_Demo/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/tom/software/geant4/geant4-v10.2.3/Rad_Demo/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

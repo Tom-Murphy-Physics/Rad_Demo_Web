@@ -12,7 +12,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
-
+#include "G4RandomDirection.hh"
 
 G4ParticleDefinition* PrimaryGeneratorAction::fgPrimaryParticle = 0;
 
@@ -28,6 +28,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(
     fXVertex(0.),
     fYVertex(0.),
     fZVertex(0.),
+    fBeamAngle(0.),
     fVertexDefined(false)
 {
   G4int n_particle = 1;
@@ -59,9 +60,17 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(
   pzi = pzi/normalization;
 
   //defines the gamma's kinematics 
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(pxi,pyi,pzi));
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(pxi,pyi,pzi));
   //fParticleGun->SetParticleEnergy(511.*keV);
 
+  G4double phi = 10*deg;
+  G4double a = 2*phi*G4UniformRand() + 90*deg - phi;
+  G4double theta0 = 0*deg;
+  double b = 2*theta0*G4UniformRand() + 90*deg - theta0;
+  G4ThreeVector v(std::cos(a)*std::sin(b), std::sin(a)*std::sin(b), std::cos(b));
+  v.set(v.y(), v.z(),v.x());
+  fParticleGun->SetParticleMomentumDirection(v);
+  
   //inital position is redefined 
   fZVertex = -0.225*m;
   fParticleGun->SetParticlePosition(G4ThreeVector(fXVertex,fYVertex,fZVertex));
@@ -132,7 +141,18 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   pzi = pzi/normalization;
 
   //defines the gamma's kinematics 
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(pxi,pyi,pzi));
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(pxi,pyi,pzi));
+  G4double theta0 = fBeamAngle;
+  G4double theta1 = 2*theta0*G4UniformRand() + 90*deg - theta0;
+  G4double tan_theta = 1/tan(theta1);
+  G4double phi = 180*deg;
+  G4double a = 2*phi*G4UniformRand() + 90*deg - phi;
+  G4ThreeVector v(std::cos(a)*tan_theta, std::sin(a)*tan_theta, 1);
+  G4double Normalization = pow(pow(v.x(),2) + pow(v.y(),2) + pow(v.z(),2), 0.5);
+  
+  v.set(v.x()/Normalization, v.y()/Normalization, v.z()/Normalization);
+  //G4cout<<v.x()<<" "<<v.y()<<" "<<v.z()<<G4endl;
+  fParticleGun->SetParticleMomentumDirection(v);
   //fParticleGun->SetParticleEnergy(511.*keV);
 }
 
@@ -171,4 +191,10 @@ void PrimaryGeneratorAction::SetZVertex(G4double z)
   fZVertex = z;
   G4cout << " Z coordinate of the primary vertex = " << fZVertex/mm <<
             " mm." << G4endl;
+}
+
+void PrimaryGeneratorAction::SetBeamAngle(G4double theta)
+{
+  fBeamAngle = theta;
+  G4cout<< "The beam's opening angle is = " << fBeamAngle <<G4endl;
 }

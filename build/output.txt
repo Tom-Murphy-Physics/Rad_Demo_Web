@@ -33,7 +33,6 @@ VRML2FILE (VRML2FILE)
 gMocrenFile (gMocrenFile)
 OpenGLImmediateQt (OGLIQt, OGLI)
 OpenGLStoredQt (OGLSQt, OGL, OGLS)
-RayTracerX (RayTracerX)
 
 Registering model factories...
 

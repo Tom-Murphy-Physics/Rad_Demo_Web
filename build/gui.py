@@ -7,8 +7,8 @@ def gui(level):
 	particles = ["gamma","e+","e-","mu+","mu-","tau-","tau+","pi0","pi+","pi-","kaon0","kaon+","kaon-","neutron","proton","eta","anti_proton","nu_mu","nu_e"]
 
 	gifs = ["no.gif","disappointed.gif", "multifacepalm.gif", "facepalm.gif", "probnot.gif", "meh.gif","decent.gif" , "Thumbsup.gif", ]
-	vis = '~/software/geant4/geant4.10.02.p03/Rad_Demo/build/vis.mac'
-	Simulate = '~/software/geant4/geant4.10.02.p03/Rad_Demo/build/Simulate.sh'
+	vis = '~/software/geant4/geant4-v10.2.3/Rad_Demo/build/vis.mac'
+	Simulate = '~/software/geant4/geant4-v10.2.3/Rad_Demo/build/Simulate.sh'
 
 	layout = [[sg.Text("",key = "space3",size=(9,5),pad=((1336,0),(0,0)),background_color="white"),
 					sg.Text("Particle Type: ",pad=((59,0),(40,0)),background_color="#004c97"),
@@ -42,7 +42,14 @@ def gui(level):
 		os.system('ps | grep eog > process.txt')
 		with open('process.txt') as f:
 			processID = f.read()[1:7]
-		os.system('kill '+processID)
+		#os.system('kill '+processID)
+
+	def is_float(string):
+		try:
+			float(string)
+			return True
+		except ValueError:
+			return False
 
 	def open_gif(grade):
 		if grade < 0.1:
@@ -98,17 +105,17 @@ def gui(level):
 			particle = values["particle"] 
 			if validate_particle(particle)[1] == True:
 											
-				new="'s/particle proton/particle "+particle+"/g'"
-				old="'s/particle "+particle+"/particle proton/g'"
+				new="'s/particle gamma/particle "+particle+"/g'"
+				old="'s/particle "+particle+"/particle gamma/g'"
 				
 				energy = values["energy"] 
 				
-				if energy == "" or energy.isnumeric() == False:
+				if energy == "" or is_float(energy) == False:
 					print("Not a valid energy")
 					continue
 					
-				new2="'s/energy 10 MeV/energy "+energy+" MeV/g'"                               
-				old2="'s/energy "+energy+" MeV/energy 10 MeV/g'" 
+				new2="'s/energy 1234 MeV/energy "+energy+" MeV/g'"                               
+				old2="'s/energy "+energy+" MeV/energy 1234 MeV/g'" 
 				
 				os.system('sed -i '+ new + ' ' + vis)
 				os.system('sed -i '+ new2 + ' ' + vis)

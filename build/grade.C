@@ -3,7 +3,7 @@
 
 float grade(){
 
-  string path = "N500_x0.40.root";
+  string path = "N500_x0.45.root";
 
   TFile *f = new TFile(path.c_str());
 
@@ -21,7 +21,8 @@ float grade(){
       Eg = Eg + tree->GetLeaf("delta_E_good")->GetValue(0);
       Eb = Eb + tree->GetLeaf("delta_E_bad")->GetValue(0);
     }
+  cout<<Eb<<" "<<Eg<<endl;
   double grade = Eg/(Eg + Eb) * 100;
-  //cout<<"Your grade is: "<<grade<<endl;
+  cout<<"Your grade is: "<<grade<<endl;
   return grade;
 }

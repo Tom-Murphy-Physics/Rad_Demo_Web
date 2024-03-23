@@ -3,6 +3,13 @@ import os
 
 def level_up(grade):
 	if grade > 75:
+		oldz="'s/setAbsZpos "+str(Z_levels[level-1])+"/setAbsZpos 0/g'"
+		oldr="'s/setAbsRad "+str(R_levels[level-1])+"/setAbsRad 20/g'"
+		oldt="'s/setAbsThick "+str(T_levels[level-1])+"/setAbsThick 20/g'"
+		
+		os.system('sed -i '+ oldz + ' ' + vis)		
+		os.system('sed -i '+ oldr + ' ' + vis)
+		os.system('sed -i '+ oldt + ' ' + vis)
 		return True
 	else:	
 		return False
@@ -18,9 +25,9 @@ def exit(level):
 	
 	os.system("wmctrl -r :ACTIVE: -b remove,above")
 	
-vis = '~/software/geant4/geant4.10.02.p03/Rad_Demo/build/vis.mac'
+vis = '~/software/geant4/geant4-v10.2.3/Rad_Demo/build/vis.mac'
 
-os.system(". /home/tom/software/geant4/geant4.10.02.p03/Rad_Demo/build/align.sh")
+os.system(". ~/software/geant4/geant4-v10.2.3/Rad_Demo/build/align.sh")
 
 R_levels = [20,20,20,20]
 T_levels = [20,15,10,5]
