@@ -15,13 +15,13 @@
 /run/particle/dumpCutValues
 
 /gun/particle proton
-/gun/energy 10 MeV
+/gun/energy 100 MeV
 
 /calor/setAbsZpos 0
 /calor/setAbsRad 20
 /calor/setAbsThick 20
 
-/gun/BeamAngle 0 deg
+/gun/BeamAngle 4 deg
 
 /process/em/lowestElectronEnergy 10 eV
 # Use this open statement to create an OpenGL view:
@@ -58,4 +58,4 @@
 
 /run/beamOn 1
 
-/run/beamOn 1
+/run/beamOn 100
