@@ -63,9 +63,11 @@ Z_levels = [0,10,20,30]
 	
 def level_up(grade, level):
 	if grade > 75:	
-		os.system('sed -i "20s/.*/'+ "\/calor\/setAbsZpos " + str(Z_levels[level-1]) +'/" vis.mac')
-		os.system('sed -i "21s/.*/'+ "\/calor\/setAbsRad " + str(R_levels[level-1]) +'/" vis.mac')
-		os.system('sed -i "22s/.*/'+ "\/calor\/setAbsThick " + str(T_levels[level-1]) +'/" vis.mac')
+		#os.system('sed -i "20s/.*/'+ "\/calor\/setAbsZpos " + str(Z_levels[level-1]) +'/" vis.mac')
+		#os.system('sed -i "21s/.*/'+ "\/calor\/setAbsRad " + str(R_levels[level-1]) +'/" vis.mac')
+		#os.system('sed -i "22s/.*/'+ "\/calor\/setAbsThick " + str(T_levels[level-1]) +'/" vis.mac')
+		with open(".level.txt", "w") as file:
+			file.write(str(level))
 		return True
 	else:	
 		return False

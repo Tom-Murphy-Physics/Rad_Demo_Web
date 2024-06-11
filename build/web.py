@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, flash
 import web_functions as wf
+import vis_maker as vm
 import subprocess
 import time
 import os
 
 app = Flask(__name__)
+
+R_levels = [20,20,20,20]
+T_levels = [20,15,10,5]
+Z_levels = [0,10,20,30]
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -13,11 +18,11 @@ def home():
 	energy = " "
 	number_of_particles = " "
 	beam_angle = 0
-	if 'level' in locals():
-		level = level
-	else:
-		level = 1
 	
+	with open(".level.txt", "r") as file:
+		l = file.read()
+	
+	level = int(l)
 	if request.method == 'POST':
 			
 		if request.form.get('action1') == 'level_reset':
@@ -31,7 +36,7 @@ def home():
 			energy_validation = wf.validate_energy(energy)
 			particle_validation = wf.validate_particle(particle)
 			
-			os.system('sed -i "61s/.*/\/run\/beamOn ' + str(number_of_particles) +'/" vis.mac')
+			#os.system('sed -i "61s/.*//run/beamOn ' + str(number_of_particles) +'/" vis.mac')
 			
 			if energy_validation[1] == False:
 				energy = energy_validation[0]
@@ -40,9 +45,10 @@ def home():
 				grade = "Try again"
 			
 			if particle_validation[1] == True and energy_validation[1] == True:
-				os.system('sed -i "18s/.*/'+ "\/gun\/energy " + energy + " MeV"+'/" vis.mac')
-				os.system('sed -i "17s/.*/'+ "\/gun\/particle " + particle +'/" vis.mac')
-				os.system('sed -i "24s/.*/'+ "\/gun\/BeamAngle " + str(beam_angle) +' deg/" vis.mac')
+				#os.system('sed -i "18s/.*/'+ "/gun/energy " + energy + " MeV"+'/" vis.mac')
+				#os.system('sed -i "17s/.*/'+ "/gun/particle " + particle +'/" vis.mac')
+				#os.system('sed -i "24s/.*/'+ "/gun/BeamAngle " + str(beam_angle) +' deg/" vis.mac')
+				vm.make(particle, energy, beam_angle, number_of_particles, Z_levels[level-1], R_levels[level-1], T_levels[level-1])
 				os.system('./Rad_Demo > output.txt &')
 				window_number = subprocess.getoutput("wmctrl -lG | grep ' Rad_Demo' | cut -d ' ' -f1")
 				while window_number == "":
@@ -50,7 +56,6 @@ def home():
 				os.system('wmctrl -ir "' + str(window_number) + '" -e '+'"0,300,162,1600,975"')
 				grade = round(os.system('root -l -q grade.C > a.txt')/253.43, 2)
 				#os.system("rm N500_x0.45.root")
-				print(grade)
 				if grade > 100:
 					grade = 100
 				

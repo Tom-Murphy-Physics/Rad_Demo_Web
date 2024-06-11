@@ -1,4 +1,5 @@
-
+def make(Particle, Energy, Angle, N_particles, AbsZpos, AbsRad, AbsThick):
+	content = """
 	/tracking/verbose 0
 
 	/run/verbose 0
@@ -14,15 +15,28 @@
 
 	/run/particle/dumpCutValues
 
-	/gun/particle e-
-	/gun/energy 50 MeV
+	/gun/particle """
+	content += str(Particle)
+	content+= """
+	/gun/energy """
+	content += str(Energy)
+	content += """ MeV
 
-	/calor/setAbsZpos 0
-	/calor/setAbsRad 20
-	/calor/setAbsThick 20
+	/calor/setAbsZpos """
+	content += str(AbsZpos) 
+	content += """
+	/calor/setAbsRad """
+	content += str(AbsRad)
+	content+= """
+	/calor/setAbsThick """
+	content += str(AbsThick)
+	content += """
 
-	/gun/BeamAngle 10 deg
-	
+	/gun/BeamAngle """
+	content += str(Angle)
+	content += """ deg
+	"""
+	content += """
 	/process/em/lowestElectronEnergy 10 eV
 	# Use this open statement to create an OpenGL view:
 	/vis/open OGL 600x600-0+0
@@ -58,4 +72,12 @@
 
 	/run/beamOn 1
 
-	/run/beamOn 75
+	/run/beamOn """
+	content += str(N_particles)
+
+	# Create and write to vis.mac
+	with open("vis.mac", "w") as file:
+	    file.write(content)
+
+if __name__ == "__main__":
+	make("e-", 50, 10, 75, 0, 20, 20)
