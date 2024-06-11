@@ -54,6 +54,7 @@ def home():
 				while window_number == "":
 					window_number = subprocess.getoutput("wmctrl -lG | grep ' Rad_Demo' | cut -d ' ' -f1")
 				os.system('wmctrl -ir "' + str(window_number) + '" -e '+'"0,300,162,1600,975"')
+				time.sleep(1)
 				os.system('root -l -q grade.C > .grade.txt')
 				with open('.grade.txt') as f:
 					for line in f:
