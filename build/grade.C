@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 
-float grade(){
+void grade(){
 
   string path = "N500_x0.45.root";
 
@@ -21,8 +21,9 @@ float grade(){
       Eg = Eg + tree->GetLeaf("delta_E_good")->GetValue(0);
       Eb = Eb + tree->GetLeaf("delta_E_bad")->GetValue(0);
     }
-  cout<<Eb<<" "<<Eg<<endl;
+  //cout<<Eb<<" "<<Eg<<endl;
   double grade = Eg/(Eg + Eb) * 100;
-  cout<<"Your grade is: "<<grade<<endl;
-  return grade;
+  cout<<grade<<endl;
+  //cout<<"Your grade is: "<<grade<<endl;
+  //return grade;
 }
