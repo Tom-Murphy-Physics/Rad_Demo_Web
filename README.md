@@ -10,6 +10,12 @@ Install brew:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
+Add brew to the path
+```
+(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/admin/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
 Install wget
 ```
 brew install wget
