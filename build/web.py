@@ -55,11 +55,14 @@ def home():
 					window_number = subprocess.getoutput("wmctrl -lG | grep ' Rad_Demo' | cut -d ' ' -f1")
 				os.system('wmctrl -ir "' + str(window_number) + '" -e '+'"0,300,162,1600,975"')
 				time.sleep(1)
-				os.system('root -l -q grade.C > .grade.txt')
-				with open('.grade.txt') as f:
-					for line in f:
-						pass
-					grade = float(line)
+				output = subprocess.run(['root', '-q', '-l', 'grade.C'], capture_output=True, text=True).stdout
+				lines = output.split(' ')
+				grade = float(lines[-1])
+				#os.system('root -l -q grade.C > .grade.txt')
+				#with open('.grade.txt') as f:
+				#	for line in f:
+				#		pass
+				#	grade = float(line)
 				#os.system("rm N500_x0.45.root")
 				if grade > 100:
 					grade = 100
