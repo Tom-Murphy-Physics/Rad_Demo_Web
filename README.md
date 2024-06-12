@@ -23,7 +23,7 @@ brew install wget
 
 Obtain the installation script
 Navigate to here and downlaod the file. It will probably ask you if you want to download it because it could be sketchy. My code is shit but it's not sketchy.
-https://drive.google.com/file/d/1Lg_c09o3-xO2L-1HlvmcYsK43EpFLF8q/view?usp=sharing
+https://drive.google.com/file/d/16l2MbLNAgdJcRBaOmd06Gh5PTGDU72t2/view?usp=drive_link
 
 Move the script to the right place
 ```
