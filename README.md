@@ -28,7 +28,7 @@ https://drive.google.com/file/d/17NXbVjoerFS41QCX7abOIio7jr67D6ej/view?usp=shari
 
 Move the script to the right place
 ```
-mv ~/Downloads/Rad_Demo_Install.py .
+mv ~/Downloads/Rad_Demo_Install_1.2.3.py .
 ```
 
 Execute it
