@@ -33,7 +33,7 @@ mv ~/Downloads/Rad_Demo_Install_1.2.3.py .
 
 Execute it
 ```
-sudo python3 Rad_Demo_Install.py
+sudo python3 Rad_Demo_Install_1.2.3.py
 ```
 This step takes a while so plug in the computer and find something better to do
 There is no need to do a git clone on this repo, all that is handeled in the script
