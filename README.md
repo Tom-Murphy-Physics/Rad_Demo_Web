@@ -16,9 +16,9 @@ Add brew to the path
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-Install wget
+Install cmake
 ```
-brew install wget
+brew install cmake
 ```
 
 Obtain the installation script
