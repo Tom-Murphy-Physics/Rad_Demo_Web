@@ -57,7 +57,8 @@ def home():
 				time.sleep(1)
 				output = subprocess.run(['root', '-q', '-l', 'grade.C'], capture_output=True, text=True).stdout
 				lines = output.split(' ')
-				grade = float(lines[-1])
+				lines = lines[-1].split('\n')
+				grade = float(lines[-2])
 				#os.system('root -l -q grade.C > .grade.txt')
 				#with open('.grade.txt') as f:
 				#	for line in f:
