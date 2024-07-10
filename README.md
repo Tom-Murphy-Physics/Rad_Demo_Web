@@ -57,10 +57,17 @@ Execute it
 ```
 python3 Rad_Demo_Install_2.0.py
 ```
+
+You can execute it without any arguments but if you wish to install it in a certain place you can run it with arguments
+
+```
+python3 Rad_Demo_Install_2.0.py --home PATH_TO_DIRECTORY --install PATH_TO_DIRECTORY
+```
+
 This step takes a while so plug in the computer and find something better to do
 There is no need to do a git clone on this repo, all that is handeled in the script
 
-open a termnal and run
+open a termnal, navigate to the install directory and execute
 ```
 source Rad_Demo.sh
 ```
