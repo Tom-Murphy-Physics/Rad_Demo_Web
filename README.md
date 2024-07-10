@@ -37,6 +37,8 @@ There is no need to do a git clone on this repo, all that is handeled in the scr
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+Below are the instructions for instillation of a mac
+
 This may or may not work
 
 Obtain the installation script
