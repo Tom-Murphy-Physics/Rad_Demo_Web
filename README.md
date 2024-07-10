@@ -16,11 +16,6 @@ Add brew to the path
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-Install cmake
-```
-brew install cmake
-```
-
 Obtain the installation script
 Navigate to here and downlaod the file. It will probably ask you if you want to download it, just click download anyway
 
