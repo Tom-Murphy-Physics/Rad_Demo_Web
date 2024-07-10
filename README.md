@@ -17,6 +17,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
 Obtain the installation script
+
 Navigate to here and downlaod the file. It will probably ask you if you want to download it, just click download anyway
 
 https://drive.google.com/file/d/1vH_byt7D5B5UdGLskfNSDcA-BJ_reRkQ/view?usp=sharing
@@ -42,6 +43,7 @@ Below are the instructions for instillation of a mac
 This may or may not work
 
 Obtain the installation script
+
 Navigate to here and downlaod the file. It will probably ask you if you want to download it, just click download anyway
 
 https://drive.google.com/file/d/16ItyHwOlNwuQpttO45y2sOB97VsYHypY/view?usp=sharing
