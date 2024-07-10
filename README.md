@@ -33,6 +33,29 @@ python3 Rad_Demo_Install_1.2.4.py
 This step takes a while so plug in the computer and find something better to do
 There is no need to do a git clone on this repo, all that is handeled in the script
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+This may or may not work
+
+Obtain the installation script
+Navigate to here and downlaod the file. It will probably ask you if you want to download it, just click download anyway
+
+https://drive.google.com/file/d/16ItyHwOlNwuQpttO45y2sOB97VsYHypY/view?usp=sharing
+
+Move the script to the right place
+```
+mv ~/Downloads/Rad_Demo_Install_2.0.py .
+```
+
+Execute it
+```
+python3 Rad_Demo_Install_2.0.py
+```
+This step takes a while so plug in the computer and find something better to do
+There is no need to do a git clone on this repo, all that is handeled in the script
+
 open a termnal and run
 ```
 source Rad_Demo.sh
