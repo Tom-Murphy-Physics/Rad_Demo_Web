@@ -1,6 +1,6 @@
 import os
 
-particles = ["gamma","e+","e-","mu+","mu-","tau-","tau+","pi0","pi+","pi-","kaon0","kaon+","kaon-","neutron","proton","eta","anti_proton","nu_mu","nu_e"]
+particles = ["alpha","gamma","e+","e-","mu+","mu-","tau-","tau+","pi0","pi+","pi-","kaon0","kaon+","kaon-","neutron","proton","eta","anti_proton","nu_mu","nu_e"]
 
 def validate_particle(s):
 	if s == "proton" or s == "Proton" or s == "P+" or s == "p+":
