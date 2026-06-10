@@ -78,6 +78,7 @@ def home():
 		
 	return render_template('particle.html', grade = grade, energy = energy, particle = particle, level = level, number_of_particles = number_of_particles, beam_angle = beam_angle)
 if __name__ == '__main__':
+	app.run(host='0.0.0.0', port=5000, debug=False)
 	app.secret_key = 'super secret key'
 	app.config['SESSION_TYPE'] = 'filesystem'
 
