@@ -41,4 +41,4 @@ RUN . /usr/local/geant4/bin/geant4.sh && \
 RUN pip3 install flask
 
 EXPOSE 5000
-CMD ["python3", "src/app.py"]
+CMD ["python3", "build/web.py"]
