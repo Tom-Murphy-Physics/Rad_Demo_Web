@@ -104,8 +104,8 @@ WORKDIR /app
 COPY . .
 
 # Build the Geant4 simulation
-RUN . /geant4/install/bin/geant4.sh && \
-    . /root-install/bin/thisroot.sh && \
+RUN cd /geant4/install/bin && . ./geant4.sh && cd /app && \
+    . /opt/root/bin/thisroot.sh && \
     mkdir -p build && cd build && \
     cmake -DGeant4_DIR=$G4COMP \
           -DGEANT4_BUILD_MULTITHREADED=OFF \
@@ -119,6 +119,6 @@ EXPOSE 5000
 
 # web.py lives in the build directory per the install script
 CMD ["/bin/bash", "-c", \
-    "cd /geant4/install/bin && . ./geant4.sh && cd /app/build && \
-     . /usr/local/bin/thisroot.sh && \
-     python3 web.py"]
+    "cd /geant4/install/bin && . ./geant4.sh && \
+     . /opt/root/bin/thisroot.sh && \
+     cd /app/build && python3 web.py"]
