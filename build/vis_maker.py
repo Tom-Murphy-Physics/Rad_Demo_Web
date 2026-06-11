@@ -14,19 +14,24 @@ def make(Particle, Energy, Angle, N_particles, AbsZpos, AbsRad, AbsThick):
 /calor/setAbsThick """ + str(AbsThick) + """
 /gun/BeamAngle """ + str(Angle) + """ deg
 /process/em/lowestElectronEnergy 10 eV
-/vis/open RayTracer
-/vis/viewer/set/style wireframe
-/vis/drawVolume
+/vis/open RayTracer 600x600
+/vis/verbose errors
+/vis/viewer/set/style surface
+/vis/viewer/set/background 1 1 1 1
 /vis/viewer/set/viewpointThetaPhi 90 45.
-/vis/viewer/zoom 1
+/vis/viewer/set/upVector 0 1 0
+/vis/viewer/set/targetPoint 0 0 0 mm
+/vis/viewer/zoom 1.5
+/vis/drawVolume
 /vis/scene/add/trajectories smooth
 /vis/filtering/trajectories/create/particleFilter
 /vis/filtering/trajectories/particleFilter-0/add opticalphoton
 /vis/filtering/trajectories/particleFilter-0/invert true
 /vis/scene/endOfEventAction accumulate
-/vis/viewer/set/upVector 0 1 0
+/vis/touchable/set/visibility true
 /run/beamOn 1
 /run/beamOn """ + str(N_particles) + """
+/vis/viewer/refresh
 /vis/viewer/flush
 """
     with open("vis.mac", "w") as file:
