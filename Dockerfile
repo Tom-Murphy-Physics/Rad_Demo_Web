@@ -104,11 +104,10 @@ WORKDIR /app
 COPY . .
 
 # Build the Geant4 simulation
-RUN find / -name "thisroot.sh" 2>/dev/null && \
-    cd /geant4/install/bin && . ./geant4.sh && cd /app && \
-    . /opt/root/bin/thisroot.sh && \
+RUN cd /geant4/install/bin && . ./geant4.sh && cd /app && \
+    bash -c ". /opt/root/bin/thisroot.sh" && \
     mkdir -p build && cd build && \
-    cmake -DGeant4_DIR=$G4COMP \
+    cmake -DGeant4_DIR=/geant4/install/lib/Geant4-10.2.3 \
           -DGEANT4_BUILD_MULTITHREADED=OFF \
           .. && \
     make -j$(nproc)
