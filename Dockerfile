@@ -1,44 +1,76 @@
-# Dockerfile
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install build dependencies
+# System dependencies
 RUN apt-get update && apt-get install -y \
-    cmake g++ libxerces-c-dev libexpat-dev \
-    python3 python3-pip git wget \
-    libx11-dev libxmu-dev libgl1-mesa-dev \
+    cmake g++ gcc git wget \
+    libxerces-c-dev libexpat-dev \
+    libx11-dev libxmu-dev libxi-dev \
+    libglu1-mesa-dev libgl1-mesa-dev \
+    python3 python3-pip \
+    dpkg-dev binutils libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Geant4 (this takes a while)
-RUN wget https://gitlab.cern.ch/geant4/geant4/-/archive/v10.2.3/geant4-v10.2.3.tar.gz \
-    && tar -xzf geant4-v10.2.3.tar.gz \
-    && mkdir geant4-build && cd geant4-build \
-    && cmake ../geant4-v10.2.3 \
-        -DGEANT4_INSTALL_DATA=ON \
-        -DGEANT4_USE_OPENGL_X11=OFF \
-        -DGEANT4_USE_QT=OFF \
+# Install ROOT (required for g4root.hh)
+RUN git clone --branch latest-stable --depth=1 \
+        https://github.com/root-project/root.git /root_src && \
+    mkdir /root-build && \
+    cmake -B/root-build -S/root_src \
+        -DCMAKE_INSTALL_PREFIX=/root-install \
+        -Dminuit2=ON \
+    && cmake --build /root-build --target install -j$(nproc) && \
+    rm -rf /root_src /root-build
+
+ENV ROOTSYS=/root-install
+ENV PATH=$ROOTSYS/bin:$PATH
+ENV LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+
+# Install Geant4 v10.2.3 with the exact flags from the install script
+RUN mkdir -p /geant4/src && \
+    git clone https://gitlab.cern.ch/geant4/geant4.git /geant4/src && \
+    cd /geant4/src && git checkout v10.2.3 && \
+    mkdir /geant4/build && mkdir /geant4/install && \
+    cmake -B/geant4/build -S/geant4/src \
+        -DCMAKE_INSTALL_PREFIX=/geant4/install \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        -DGEANT4_USE_GDML=ON \
         -DGEANT4_BUILD_MULTITHREADED=OFF \
-        -DCMAKE_INSTALL_PREFIX=/usr/local/geant4 \
-    && make -j$(nproc) && make install \
-    && cd .. && rm -rf geant4-v10.2.3* geant4-build
+        -DGEANT4_INSTALL_EXAMPLES=OFF \
+        -DGEANT4_INSTALL_DATA=ON \
+        -DGEANT4_USE_SYSTEM_EXPAT=OFF \
+        -DGEANT4_BUILD_TLS_MODEL=auto \
+        -DGEANT4_USE_QT=OFF \
+        -DGEANT4_USE_OPENGL_X11=OFF \
+    && cmake --build /geant4/build --target install -j$(nproc) && \
+    rm -rf /geant4/src /geant4/build
 
-# Source Geant4 environment
-ENV G4ENSDFSTATEDATA=/usr/local/geant4/share/Geant4/data/G4ENSDFSTATE2.3
-# (add other G4 data paths as needed)
-ENV PATH=/usr/local/geant4/bin:$PATH
+ENV G4INSTALL=/geant4/install
+ENV G4COMP=/geant4/install/lib/Geant4-10.2.3
+ENV CMAKE_PREFIX_PATH=$G4COMP
+ENV PATH=$G4INSTALL/bin:$PATH
+ENV LD_LIBRARY_PATH=$G4INSTALL/lib:$LD_LIBRARY_PATH
 
-# Copy your app
+# Copy app source
 WORKDIR /app
 COPY . .
 
 # Build the Geant4 simulation
-RUN . /usr/local/geant4/bin/geant4.sh && \
+RUN . /geant4/install/bin/geant4.sh && \
+    . /root-install/bin/thisroot.sh && \
     mkdir -p build && cd build && \
-    cmake .. && make -j$(nproc)
+    cmake -DGeant4_DIR=$G4COMP \
+          -DGEANT4_BUILD_MULTITHREADED=OFF \
+          .. && \
+    make -j$(nproc)
 
-# Install Python dependencies
+# Install Flask
 RUN pip3 install flask
 
 EXPOSE 5000
-CMD ["python3", "build/web.py"]
+
+# web.py lives in the build directory per the install script
+CMD ["/bin/bash", "-c", \
+    ". /geant4/install/bin/geant4.sh && \
+     . /root-install/bin/thisroot.sh && \
+     cd /app/build && python3 web.py"]
