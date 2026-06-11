@@ -1,0 +1,33 @@
+/tracking/verbose 0
+/run/verbose 0
+/field/setStepperType 4
+/field/setMinStep 10 mm
+/field/update
+/run/initialize
+/run/reinitializeGeometry
+
+/gun/particle e-
+/gun/energy 50 MeV
+/calor/setAbsZpos 0
+/calor/setAbsRad 20
+/calor/setAbsThick 20
+/gun/BeamAngle 10 deg
+/process/em/lowestElectronEnergy 10 eV
+
+# Use RayTracer - renders to file with no display needed
+/vis/open RayTracer
+/vis/viewer/set/style wireframe
+/vis/drawVolume
+/vis/viewer/set/viewpointThetaPhi 90 45.
+/vis/viewer/zoom 1
+/vis/scene/add/trajectories smooth
+/vis/filtering/trajectories/create/particleFilter
+/vis/filtering/trajectories/particleFilter-0/add opticalphoton
+/vis/filtering/trajectories/particleFilter-0/invert true
+/vis/scene/endOfEventAction accumulate
+
+/run/beamOn 1
+/run/beamOn 75
+
+# Save the image
+/vis/viewer/flush
