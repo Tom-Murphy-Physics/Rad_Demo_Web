@@ -11,17 +11,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Geant4 (this takes a while)
-RUN wget https://gitlab.cern.ch/geant4/geant4/-/archive/v11.2.0/geant4-v11.2.0.tar.gz \
-    && tar -xzf geant4-v11.2.0.tar.gz \
+RUN wget https://gitlab.cern.ch/geant4/geant4/-/archive/v10.2.3/geant4-v10.2.3.tar.gz \
+    && tar -xzf geant4-v10.2.3.tar.gz \
     && mkdir geant4-build && cd geant4-build \
-    && cmake ../geant4-v11.2.0 \
+    && cmake ../geant4-v10.2.3 \
         -DGEANT4_INSTALL_DATA=ON \
         -DGEANT4_USE_OPENGL_X11=OFF \
         -DGEANT4_USE_QT=OFF \
         -DGEANT4_BUILD_MULTITHREADED=OFF \
         -DCMAKE_INSTALL_PREFIX=/usr/local/geant4 \
     && make -j$(nproc) && make install \
-    && cd .. && rm -rf geant4-v11.2.0* geant4-build
+    && cd .. && rm -rf geant4-v10.2.3* geant4-build
 
 # Source Geant4 environment
 ENV G4ENSDFSTATEDATA=/usr/local/geant4/share/Geant4/data/G4ENSDFSTATE2.3
