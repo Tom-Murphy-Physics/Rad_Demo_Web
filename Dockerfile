@@ -1,6 +1,6 @@
 # Use Ubuntu 20.04 — GCC 9 is compatible with Geant4 v10.2.3
 # The ROOT project image based on Ubuntu 20.04
-FROM rootproject/root:6.26.10-ubuntu20.04
+FROM rootproject/root:6.26.14-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
