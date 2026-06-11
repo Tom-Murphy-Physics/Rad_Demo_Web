@@ -1,7 +1,6 @@
 # Use Ubuntu 20.04 — GCC 9 is compatible with Geant4 v10.2.3
 # The ROOT project image based on Ubuntu 20.04
 FROM rootproject/root:6.26.14-ubuntu20.04
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install build dependencies
@@ -43,82 +42,22 @@ WORKDIR /app
 COPY . .
 
 # Build the Geant4 simulation
-RUN cd /geant4/install/bin && . ./geant4.sh && cd /app && \
+RUN /bin/bash -c " \
+    . /geant4/install/bin/geant4.sh && \
     . /opt/root/bin/thisroot.sh && \
-    mkdir -p build && cd build && \
-    cmake -DGeant4_DIR=$G4COMP \
-          -DGEANT4_BUILD_MULTITHREADED=OFF \
-          .. && \
-    make -j$(nproc)
-
-# Install Flask
-RUN pip3 install flask
-
-EXPOSE 5000
-
-CMD ["/bin/bash", "-c", \
-    ". /geant4/install/bin/geant4.sh && \
-     . /usr/local/bin/thisroot.sh && \
-     cd /app/build && python3 web.py"]ENV LD_LIBRARY_PATH=$G4INSTALL/lib:$LD_LIBRARY_PATH
-
-# Copy app source
-WORKDIR /app
-COPY . .
-
-# Build the Geant4 simulation
-RUN . /geant4/install/bin/geant4.sh && \
-    . /usr/local/bin/thisroot.sh && \
-    mkdir -p build && cd build && \
-    cmake -DGeant4_DIR=$G4COMP \
-          -DGEANT4_BUILD_MULTITHREADED=OFF \
-          .. && \
-    make -j$(nproc)
-
-# Install Flask
-RUN pip3 install flask
-
-EXPOSE 5000
-
-CMD ["/bin/bash", "-c", \
-    ". /geant4/install/bin/geant4.sh && \
-     . /usr/local/bin/thisroot.sh && \
-     cd /app/build && python3 web.py"]        -DGEANT4_USE_GDML=ON \
-        -DGEANT4_BUILD_MULTITHREADED=OFF \
-        -DGEANT4_INSTALL_EXAMPLES=OFF \
-        -DGEANT4_INSTALL_DATA=ON \
-        -DGEANT4_USE_SYSTEM_EXPAT=OFF \
-        -DGEANT4_BUILD_TLS_MODEL=auto \
-        -DGEANT4_USE_QT=OFF \
-        -DGEANT4_USE_OPENGL_X11=OFF \
-    && cmake --build /geant4/build --target install -j$(nproc) && \
-    rm -rf /geant4/src /geant4/build
-
-ENV G4INSTALL=/geant4/install
-ENV G4COMP=/geant4/install/lib/Geant4-10.2.3
-ENV CMAKE_PREFIX_PATH=$G4COMP
-ENV PATH=$G4INSTALL/bin:$PATH
-ENV LD_LIBRARY_PATH=$G4INSTALL/lib:$LD_LIBRARY_PATH
-
-# Copy app source
-WORKDIR /app
-COPY . .
-
-# Build the Geant4 simulation
-RUN cd /geant4/install/bin && . ./geant4.sh && cd /app && \
-    bash -c ". /opt/root/bin/thisroot.sh" && \
     mkdir -p build && cd build && \
     cmake -DGeant4_DIR=/geant4/install/lib/Geant4-10.2.3 \
           -DGEANT4_BUILD_MULTITHREADED=OFF \
           .. && \
-    make -j$(nproc)
+    make -j$(nproc) \
+"
 
 # Install Flask
 RUN pip3 install flask
 
 EXPOSE 5000
 
-# web.py lives in the build directory per the install script
 CMD ["/bin/bash", "-c", \
-    "cd /geant4/install/bin && . ./geant4.sh && \
+    ". /geant4/install/bin/geant4.sh && \
      . /opt/root/bin/thisroot.sh && \
      cd /app/build && python3 web.py"]
