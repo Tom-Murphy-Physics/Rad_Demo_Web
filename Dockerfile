@@ -1,4 +1,6 @@
-FROM rootproject/root:latest
+# Use Ubuntu 20.04 — GCC 9 is compatible with Geant4 v10.2.3
+# The ROOT project image based on Ubuntu 20.04
+FROM rootproject/root:6.26.10-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -35,6 +37,29 @@ ENV G4COMP=/geant4/install/lib/Geant4-10.2.3
 ENV CMAKE_PREFIX_PATH=$G4COMP
 ENV PATH=$G4INSTALL/bin:$PATH
 ENV LD_LIBRARY_PATH=$G4INSTALL/lib:$LD_LIBRARY_PATH
+
+# Copy app source
+WORKDIR /app
+COPY . .
+
+# Build the Geant4 simulation
+RUN . /geant4/install/bin/geant4.sh && \
+    . /usr/local/bin/thisroot.sh && \
+    mkdir -p build && cd build && \
+    cmake -DGeant4_DIR=$G4COMP \
+          -DGEANT4_BUILD_MULTITHREADED=OFF \
+          .. && \
+    make -j$(nproc)
+
+# Install Flask
+RUN pip3 install flask
+
+EXPOSE 5000
+
+CMD ["/bin/bash", "-c", \
+    ". /geant4/install/bin/geant4.sh && \
+     . /usr/local/bin/thisroot.sh && \
+     cd /app/build && python3 web.py"]ENV LD_LIBRARY_PATH=$G4INSTALL/lib:$LD_LIBRARY_PATH
 
 # Copy app source
 WORKDIR /app
