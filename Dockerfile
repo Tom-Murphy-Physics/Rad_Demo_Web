@@ -107,7 +107,8 @@ WORKDIR /app
 COPY . .
 
 # Build the Geant4 simulation
-RUN cd /geant4/install/bin && . ./geant4.sh && cd /app && \
+RUN find / -name "thisroot.sh" 2>/dev/null && \
+    cd /geant4/install/bin && . ./geant4.sh && cd /app && \
     . /opt/root/bin/thisroot.sh && \
     mkdir -p build && cd build && \
     cmake -DGeant4_DIR=$G4COMP \
