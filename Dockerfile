@@ -42,6 +42,9 @@ ENV LD_LIBRARY_PATH=$G4INSTALL/lib:$LD_LIBRARY_PATH
 WORKDIR /app
 COPY . .
 
+# Find where thisroot.sh actually lives
+RUN find / -name "thisroot.sh" 2>/dev/null
+
 # Build the Geant4 simulation
 RUN cd /geant4/install/bin && . ./geant4.sh && cd /app && \
     . /usr/local/bin/thisroot.sh && \
